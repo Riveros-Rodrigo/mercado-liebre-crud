@@ -9,6 +9,8 @@ const toThousand = n => n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 const controller = {
 	// Root - Show all products
 	index: (req, res) => {
+		const productsFilePath = path.join(__dirname, '../data/productsDataBase.json');
+		const products = JSON.parse(fs.readFileSync(productsFilePath, 'utf-8'));
 		res.render('products',{
 			products,
 			toThousand
@@ -74,6 +76,9 @@ const controller = {
 	// Delete - Delete one product from DB
 	destroy : (req, res) => {
 		// Do the magic
+		const deleteProduct = products.filter(product => product.id !== +req.params.id)
+		fs.writeFileSync(path.join(__dirname, '../data/productsDataBase.json'),JSON.stringify(deleteProduct,null,3))
+		res.redirect('/products')
 	}
 };
 
