@@ -27,21 +27,48 @@ const controller = {
 
 	// Create - Form to create
 	create: (req, res) => {
-		// Do the magic
+		res.render('product-create-form')
 	},
 	
 	// Create -  Method to store
 	store: (req, res) => {
-		// Do the magic
+		const {name, price, description, discount, category} = req.body
+		const product = {
+			id: products[products.length -1].id + 1,
+			name: name.trim(),
+			price: +price,
+			description: description.trim(),
+			discount: +discount,
+			category,
+			image: null
+		}
+		products.push(product)
+		fs.writeFileSync(path.join(__dirname, '../data/productsDataBase.json'),JSON.stringify(products,null,3))
+		res.redirect('/products')
 	},
 
 	// Update - Form to edit
 	edit: (req, res) => {
-		// Do the magic
+		const product = products.find(product => product.id === +req.params.id)
+		res.render('product-edit-form',{
+			...product
+		})
 	},
 	// Update - Method to update
 	update: (req, res) => {
-		// Do the magic
+		const {name, price, description, discount, category} = req.body
+		const productsModify = products.map(product => {
+			if(product.id === +req.params.id){
+				product.name = name.trim()
+				product.price = +price
+				product.description = description.trim()
+				product.discount = +discount
+				product.category
+			}
+			return product
+		})
+		fs.writeFileSync(path.join(__dirname, '../data/productsDataBase.json'),JSON.stringify(productsModify,null,3))
+		res.redirect('/products')
 	},
 
 	// Delete - Delete one product from DB
